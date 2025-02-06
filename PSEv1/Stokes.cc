@@ -238,7 +238,7 @@ void Stokes::setParams()
 	// Print summary to command line output
 	printf("\n");
 	printf("\n");
-	m_exec_conf->msg->notice(2) << "--- NUFFT Hydrodynamics Statistics ---" << endl;
+	m_exec_conf->msg->notice(2) << "--- ???????? NUFFT Hydrodynamics Statistics ---" << endl;
 	m_exec_conf->msg->notice(2) << "Mx: " << m_Nx << endl;
 	m_exec_conf->msg->notice(2) << "My: " << m_Ny << endl;
 	m_exec_conf->msg->notice(2) << "Mz: " << m_Nz << endl;
