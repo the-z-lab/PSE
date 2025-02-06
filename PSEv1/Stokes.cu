@@ -187,7 +187,7 @@ void gpu_stokes_step_one_kernel(
 	// Print the "particle index" = idx, the "group index" = group_idx,
         // and the position from 'pos'
         printf("GPU: Particle %u -> Group Index %d, Position: (%.3f, %.3f, %.3f)\n", 
-               idx, group_idx, pos.x, pos.y, pos.z);
+               d_group_members[group_idx], group_idx, pos.x, pos.y, pos.z);
         }
     }
 
