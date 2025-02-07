@@ -156,13 +156,13 @@ void gpu_stokes_step_one_kernel(
 
         // read the particle's velocity and acceleration (MEM TRANSFER: 32 bytes)
         Scalar4 velmass = d_vel[idx];
-	Scalar mass = velmass.w;
+		Scalar mass = velmass.w;
         Scalar3 vel = make_scalar3(velmass.x, velmass.y, velmass.z);
 
 	// Add the shear
         vel.x += shear_rate * pos.y;
 
-	Scalar4 net_force = d_net_force[idx];
+		Scalar4 net_force = d_net_force[idx];
         Scalar3 accel = make_scalar3(net_force.x, net_force.y, net_force.z);
 
         // update the position
@@ -171,7 +171,7 @@ void gpu_stokes_step_one_kernel(
         // FLOPS: 3
         pos += dx;
 
-	accel = accel/mass;
+		accel = accel/mass;
 
         // read in the particle's image (MEM TRANSFER: 16 bytes)
         int3 image = d_image[idx];
@@ -180,14 +180,14 @@ void gpu_stokes_step_one_kernel(
         box.wrap(pos, image);
 
         // write out the results (MEM_TRANSFER: 48 bytes)
-	d_accel[idx] = accel;
+		d_accel[idx] = accel;
         d_pos[idx] = make_scalar4(pos.x, pos.y, pos.z, postype.w);
         d_image[idx] = image;
 
 	// Print the "particle index" = idx, the "group index" = group_idx,
         // and the position from 'pos'
-        printf("GPU: Particle %u -> Group Index %d, Position: (%.3f, %.3f, %.3f)\n", 
-               d_group_members[group_idx], group_idx, pos.x, pos.y, pos.z);
+        printf("GPU: Particle Global Index %u, Group Index %d, Position: (%.3f, %.3f, %.3f), Type: %d \n", 
+               d_group_members[group_idx], group_idx, pos.x, pos.y, pos.z, (int) postype.w);
         }
     }
 
