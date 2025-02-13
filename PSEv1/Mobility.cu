@@ -609,12 +609,21 @@ __global__ void gpu_stokes_Mreal_kernel(
 	
 	// Initialize contribution to velocity
 	Scalar4 u = make_scalar4( 0.0, 0.0, 0.0, 0.0 );
-	
+
 	if (group_idx < group_size) {
 	  
 		// Particle for this thread
 		unsigned int idx = d_group_members[group_idx];
 		
+		// read the particle's posision (MEM TRANSFER: 16 bytes)
+        Scalar4 postype = d_pos[idx];
+        Scalar3 pos = make_scalar3(postype.x, postype.y, postype.z);
+
+		// Print the "particle index" = idx, the "group index" = group_idx,
+        // and the position from 'pos'
+        printf("GPU: [Mobility] Particle Global Index %u, Group Index %d, Position: (%.3f, %.3f, %.3f), Type: %d \n", 
+               d_group_members[group_idx], group_idx, pos.x, pos.y, pos.z, (int) postype.w);
+
 		// Number of neighbors for current particle
 		unsigned int n_neigh = d_n_neigh[idx]; 
 		unsigned int head_idx = d_headlist[idx];

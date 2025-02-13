@@ -86,7 +86,7 @@ extern __shared__ Scalar4 shared_Fpos[];
   	Generate random numbers on particles
 	
 	\param d_psi            random vector
-        \param group_size       number of particles
+    \param group_size       number of particles
 	\param d_group_members  index to particle arrays
 	\param timestep         current time step
 	\param seed             seed for random number generation
@@ -112,6 +112,10 @@ __global__ void gpu_stokes_BrownianGenerate_kernel(
 
 		// Global particle index
 		unsigned int idx = d_group_members[group_idx];
+
+		// Print the "particle index" = idx, the "group index" = group_idx
+        printf("GPU: [Brownian] Particle Global Index %u, Group Index %d", 
+               d_group_members[group_idx], group_idx);
 
 		// Initialize random number generator
 		detail::Saru s(idx, timestep + seed);
