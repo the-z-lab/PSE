@@ -265,7 +265,7 @@ __global__ void gpu_stokes_MatVecMultiply_kernel(
 
 		for ( int ii = 0; ii < m; ++ii ){
 
-		    Scalar4 matidx = d_A[ idx + ii*group_size ];
+		    Scalar4 matidx = d_A[ group_idx + ii*group_size ];
 
 		    Scalar xcurr = d_x[ii];
 
@@ -275,7 +275,7 @@ __global__ void gpu_stokes_MatVecMultiply_kernel(
 
 		}
 
-		d_b[idx] = make_scalar4( tempprod.x, tempprod.y, tempprod.z, d_A[idx].w );
+		d_b[idx] = make_scalar4( tempprod.x, tempprod.y, tempprod.z, d_A[group_idx].w );
 
 	}
 }
