@@ -253,12 +253,14 @@ __global__ void gpu_stokes_MatVecMultiply_kernel(
 						Scalar *d_x, 
 						Scalar4 *d_b, 
 						unsigned int group_size, 
+						unsigned int *d_group_members,
 						int m
 						){
 
-	int idx = blockDim.x * blockIdx.x + threadIdx.x;
-	if (idx < group_size) {
+	int group_idx = blockDim.x * blockIdx.x + threadIdx.x;
+	if (group_idx < group_size) {
 
+		unsigned int idx = d_group_members[group_idx];
 		Scalar3 tempprod = make_scalar3( 0.0, 0.0, 0.0 );
 
 		for ( int ii = 0; ii < m; ++ii ){

@@ -589,7 +589,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	cudaMemcpy( d_Tm, Tm, m*sizeof(Scalar), cudaMemcpyHostToDevice );
 
 	// Multiply basis vectors by Tm, [ V0, V1, ..., Vm-1 ] * Tm
-	gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, group_size, m);
+	gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, group_size, d_group_members, m);
 
 	// Copy velocity
 	cudaMemcpy( d_vel_old, d_vel, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
@@ -717,7 +717,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		cudaMemcpy( d_Tm, Tm, m*sizeof(Scalar), cudaMemcpyHostToDevice );
 
 		// Multiply basis vectors by Tm -- velocity = Vm * Tm
-		gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, group_size, m);
+		gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, group_size, d_group_members, m);
 
 		// Compute step norm error
     		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_vel, d_vel_old, d_vel_old, 1.0, -1.0, group_size, d_group_members);
