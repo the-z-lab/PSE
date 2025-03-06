@@ -589,7 +589,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	cudaMemcpy( d_Tm, Tm, m*sizeof(Scalar), cudaMemcpyHostToDevice );
 
 	// Multiply basis vectors by Tm, [ V0, V1, ..., Vm-1 ] * Tm
-	gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, group_size, d_group_members, m);
+	gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, N_total, group_size, d_group_members, m);
 
 	// Copy velocity
 	cudaMemcpy( d_vel_old, d_vel, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
@@ -717,7 +717,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		cudaMemcpy( d_Tm, Tm, m*sizeof(Scalar), cudaMemcpyHostToDevice );
 
 		// Multiply basis vectors by Tm -- velocity = Vm * Tm
-		gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, group_size, d_group_members, m);
+		gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, N_total, group_size, d_group_members, m);
 
 		// Compute step norm error
     		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_vel, d_vel_old, d_vel_old, 1.0, -1.0, group_size, d_group_members);
@@ -815,11 +815,11 @@ void gpu_stokes_CombinedMobilityBrownian_wrap(
 
 	// Real space velocity to add
 	Scalar4 *d_vel2;
-	cudaMalloc( (void**)&d_vel2, group_size*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_vel2, group_size*sizeof(Scalar4) ); //Check d_vel2 size
 	
 	// Generate uniform distribution (-1,1) on d_psi
 	Scalar4 *d_psi;
-	cudaMalloc( (void**)&d_psi, group_size*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_psi, N_total*sizeof(Scalar4) );
 	gpu_stokes_BrownianGenerate_kernel<<<grid, threads>>>( d_psi, group_size, d_group_members, timestep, seed );
 	
 	// Spreading and contraction grid information and parameters
