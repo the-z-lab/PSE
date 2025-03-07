@@ -361,30 +361,30 @@ __global__ void gpu_stokes_BrownianGridGenerate_kernel(
 void gpu_stokes_BrealLanczos_wrap( 	
 					Scalar4 *d_psi,
 				   	Scalar4 *d_pos,
-                                   	unsigned int *d_group_members,
-                                   	unsigned int group_size,
-                                   	const BoxDim& box,
-                                   	Scalar dt,
-			           	Scalar4 *d_vel,
-			           	const Scalar T,
-			           	const unsigned int timestep,
-			           	const unsigned int seed,
-			           	Scalar xi,
-			           	Scalar ewald_cut,
-			           	Scalar ewald_dr,
-			           	int ewald_n,
-			           	Scalar4 *d_ewaldC1, 
-			           	const unsigned int *d_n_neigh,
-                                   	const unsigned int *d_nlist,
-                                   	const unsigned int *d_headlist,
-			           	int& m,
+					unsigned int *d_group_members,
+					unsigned int group_size,
+					const BoxDim& box,
+					Scalar dt,
+					Scalar4 *d_vel,
+					const Scalar T,
+					const unsigned int timestep,
+					const unsigned int seed,
+					Scalar xi,
+					Scalar ewald_cut,
+					Scalar ewald_dr,
+					int ewald_n,
+					Scalar4 *d_ewaldC1, 
+					const unsigned int *d_n_neigh,
+					const unsigned int *d_nlist,
+					const unsigned int *d_headlist,
+					int& m,
 				   	Scalar cheb_error,
-			           	dim3 grid,
-			           	dim3 threads,
-			           	int gridBlockSize,
-			           	int gridNBlock,
-			           	Scalar3 gridh,
-			           	Scalar self 
+					dim3 grid,
+					dim3 threads,
+					int gridBlockSize,
+					int gridNBlock,
+					Scalar3 gridh,
+					Scalar self 
 					){
 
 	// Dot product kernel specifications
@@ -419,13 +419,13 @@ void gpu_stokes_BrealLanczos_wrap(
 
 	// Vectors for Lanczos iterations
 	Scalar4 *d_v, *d_vj, *d_vjm1;
-	cudaMalloc( (void**)&d_v, group_size*sizeof(Scalar4) );
-	cudaMalloc( (void**)&d_vj, group_size*sizeof(Scalar4) );
-	cudaMalloc( (void**)&d_vjm1, group_size*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_v, N_total*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_vj, N_total*sizeof(Scalar4) ); 
+	cudaMalloc( (void**)&d_vjm1, N_total*sizeof(Scalar4) ); 
 
 	// Storage vector for M*vj
 	Scalar4 *d_Mvj;
-	cudaMalloc( (void**)&d_Mvj, group_size*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_Mvj, N_total*sizeof(Scalar4) );
 
 	// Storage array for V
 	Scalar4 *d_V;
@@ -433,7 +433,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 	// Step-norm things
 	Scalar4 *d_vel_old, *d_Mpsi;
-	cudaMalloc( (void**)&d_vel_old, group_size*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_vel_old, N_total*sizeof(Scalar4) );
 	cudaMalloc( (void**)&d_Mpsi, group_size*sizeof(Scalar4) );
 	Scalar psiMpsi;
 
@@ -441,7 +441,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	Scalar4 *d_temp;
 
 	// Copy random vector to v0
-	cudaMemcpy( d_vj, d_psi, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+	cudaMemcpy( d_vj, d_psi, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 	
 	// Compute the norm of the d_psi (also the norm of basis vector v0)
         Scalar vnorm;
@@ -477,7 +477,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int jj = 0; jj < m; ++jj ){
 
 		// Store current basis vector
-		cudaMemcpy( &d_V[jj*group_size], d_vj, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+		cudaMemcpy( &d_V[jj*group_size], d_vj, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 
 		// Store beta
 		beta[jj] = tempbeta;
@@ -592,7 +592,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	gpu_stokes_MatVecMultiply_kernel<<<grid,threads>>>(d_V, d_Tm, d_vel, N_total, group_size, d_group_members, m);
 
 	// Copy velocity
-	cudaMemcpy( d_vel_old, d_vel, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+	cudaMemcpy( d_vel_old, d_vel, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 
 	// Restore alpha, beta
 	for ( int ii = 0; ii < m; ++ii ){
@@ -616,7 +616,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		//
 
 		// Store the current basis vector
-		cudaMemcpy( &d_V[jj*group_size], d_vj, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+		cudaMemcpy( &d_V[jj*group_size], d_vj, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 
 		// Store beta
 		beta[jj] = tempbeta;
@@ -728,7 +728,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		stepnorm = sqrtf( stepnorm / psiMpsi );
 
 		// Copy velocity
-		cudaMemcpy( d_vel_old, d_vel, group_size*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+		cudaMemcpy( d_vel_old, d_vel, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 
 		// Restore alpha, beta
 		for ( int ii = 0; ii < m; ++ii ){
@@ -815,7 +815,7 @@ void gpu_stokes_CombinedMobilityBrownian_wrap(
 
 	// Real space velocity to add
 	Scalar4 *d_vel2;
-	cudaMalloc( (void**)&d_vel2, group_size*sizeof(Scalar4) ); //Check d_vel2 size
+	cudaMalloc( (void**)&d_vel2, N_total*sizeof(Scalar4) ); //Check d_vel2 size
 	
 	// Generate uniform distribution (-1,1) on d_psi
 	Scalar4 *d_psi;
