@@ -430,7 +430,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 	// Storage array for V
 	Scalar4 *d_V;
-	cudaMalloc( (void**)&d_V, m_max*group_size * sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_V, m_max*N_total * sizeof(Scalar4) );
 
 	// Step-norm things
 	Scalar4 *d_vel_old, *d_Mpsi;
