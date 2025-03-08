@@ -363,7 +363,7 @@ void gpu_stokes_BrealLanczos_wrap(
 				   	Scalar4 *d_pos,
 					unsigned int *d_group_members,
 					unsigned int group_size,
-					const unsigned int N_total
+					const unsigned int N_total,
 					const BoxDim& box,
 					Scalar dt,
 					Scalar4 *d_vel,
