@@ -66,6 +66,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 void gpu_stokes_Mobility_wrap( Scalar4 *d_pos,
                                	Scalar4 *d_vel,
                                	Scalar4 *d_net_force,
+					const unsigned int N_total,
 			       	unsigned int *d_group_members,
 			       	unsigned int group_size,
                                	const BoxDim& box,

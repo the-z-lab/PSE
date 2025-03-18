@@ -734,6 +734,7 @@ void gpu_stokes_Mobility_wrap(
 				Scalar4 *d_pos,
 				Scalar4 *d_vel,
 				Scalar4 *d_net_force,
+				const unsigned int N_total,
 				unsigned int *d_group_members,
 				unsigned int group_size,
 				const BoxDim& box,
@@ -765,8 +766,8 @@ void gpu_stokes_Mobility_wrap(
 
 	// Real and wave space velocity
 	Scalar4 *d_vel1, *d_vel2;
-	cudaMalloc( &d_vel1, group_size*sizeof(Scalar4) );
-	cudaMalloc( &d_vel2, group_size*sizeof(Scalar4) );
+	cudaMalloc( &d_vel1, N_total*sizeof(Scalar4) );
+	cudaMalloc( &d_vel2, N_total*sizeof(Scalar4) );
 	
 	// Add the wave space contribution to the velocity
 	gpu_stokes_Mwave_wrap( d_pos, d_vel1, d_net_force, d_group_members, group_size, box, xi, eta, d_gridk, d_gridX, d_gridY, d_gridZ, plan, Nx, Ny, Nz, NxNyNz, grid, threads, gridBlockSize, gridNBlock, P, gridh );
