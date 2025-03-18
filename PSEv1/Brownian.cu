@@ -478,7 +478,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int jj = 0; jj < m; ++jj ){
 
 		// Store current basis vector
-		cudaMemcpy( &d_V[jj*group_size], d_vj, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+		cudaMemcpy( &d_V[jj*N_total], d_vj, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 
 		// Store beta
 		beta[jj] = tempbeta;
@@ -617,7 +617,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		//
 
 		// Store the current basis vector
-		cudaMemcpy( &d_V[jj*group_size], d_vj, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
+		cudaMemcpy( &d_V[jj*N_total], d_vj, N_total*sizeof(Scalar4), cudaMemcpyDeviceToDevice );
 
 		// Store beta
 		beta[jj] = tempbeta;
