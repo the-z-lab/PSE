@@ -435,7 +435,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	// Step-norm things
 	Scalar4 *d_vel_old, *d_Mpsi;
 	cudaMalloc( (void**)&d_vel_old, N_total*sizeof(Scalar4) );
-	cudaMalloc( (void**)&d_Mpsi, group_size*sizeof(Scalar4) );
+	cudaMalloc( (void**)&d_Mpsi, N_total*sizeof(Scalar4) );
 	Scalar psiMpsi;
 
 	// Temporary pointer
