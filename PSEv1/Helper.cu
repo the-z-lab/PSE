@@ -242,7 +242,7 @@ __global__ void gpu_stokes_DotStepTwo_kernel(
 
 	\param d_A 		matrix, N x m
 	\param d_x		multiplying vector, m x 1
-	\param d_b		result vector, A*x, m x 1
+	\param d_b		result vector, A*x, N x 1
 	\param group_size	number of particles
 	\param m		number of iterations ( number of columns of A, length of x )
 
