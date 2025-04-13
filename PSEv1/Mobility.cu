@@ -621,8 +621,8 @@ __global__ void gpu_stokes_Mreal_kernel(
 
 		// Print the "particle index" = idx, the "group index" = group_idx,
         // and the position from 'pos'
-        printf("GPU: [Mobility] Particle Global Index %u, Group Index %d, Position: (%.3f, %.3f, %.3f), Type: %d, Groupsize: %d \n", 
-               d_group_members[group_idx], group_idx, pos.x, pos.y, pos.z, (int) postype.w, group_size);
+        //printf("GPU: [Mobility] Particle Global Index %u, Group Index %d, Position: (%.3f, %.3f, %.3f), Type: %d, Groupsize: %d \n", 
+        //       d_group_members[group_idx], group_idx, pos.x, pos.y, pos.z, (int) postype.w, group_size);
 
 		// Number of neighbors for current particle
 		unsigned int n_neigh = d_n_neigh[idx]; 

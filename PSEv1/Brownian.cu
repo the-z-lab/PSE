@@ -114,8 +114,8 @@ __global__ void gpu_stokes_BrownianGenerate_kernel(
 		unsigned int idx = d_group_members[group_idx];
 
 		// Print the "particle index" = idx, the "group index" = group_idx
-        printf("GPU: [Brownian] Particle Global Index %u, Group Index %d, groupsize: %d \n", 
-               d_group_members[group_idx], group_idx, group_size);
+        //printf("GPU: [Brownian] Particle Global Index %u, Group Index %d, groupsize: %d \n", 
+        //       d_group_members[group_idx], group_idx, group_size);
 
 		// Initialize random number generator
 		detail::Saru s(idx, timestep + seed);
