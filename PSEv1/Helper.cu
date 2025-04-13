@@ -231,6 +231,7 @@ __global__ void gpu_stokes_DotStepTwo_kernel(
         if (threadIdx.x == 0)
 	{
             	dot_sum[0] = partial_sum[0]; // Save the dot product to the first element of dot_sum array
+				printf("dot_sum[0]: %u \n", dot_sum[0]);
 	}
 
 }
