@@ -473,6 +473,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	// Values for current alpha and beta in the iteration
 	Scalar tempalpha;
 	Scalar tempbeta = 0.0;
+	printf("Scalar tempalpha: %f", tempalpha)
 
 	// Apply the Lanczos method
 	for ( int jj = 0; jj < m; ++jj ){
