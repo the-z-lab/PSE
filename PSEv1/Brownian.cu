@@ -482,7 +482,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store beta
 		beta[jj] = tempbeta;
-		printf("beta[%u]: %d \n", jj, tempbeta);
+		printf("beta[jj=%d]: %d \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
     		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
@@ -495,7 +495,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store updated alpha
 		alpha[jj] = tempalpha;
-		printf("alpha[%u]: %d \n", jj, tempalpha);
+		printf("alpha[jj=%d]: %d \n", jj, tempalpha);
 
 		// v = v - alphaj*vj
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_v, d_vj, d_v, 1.0, -1.0*tempalpha, group_size, d_group_members);
@@ -531,10 +531,11 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int ii = 0; ii < m; ++ii ){
 		alpha_save[ii] = alpha[ii];
 		beta_save[ii] = beta[ii];
-		printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
-		printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
+		printf("alpha_save[ii=%d]: %d \n", ii, alpha_save[ii]);
+		printf("beta_save[ii=%d]: %d \n", ii, beta_save[ii]);
 	}
 	beta_save[m] = beta[m];
+	printf("beta_save[m=%d]: %d \n", m, beta[m]);
 
 	// Now that we have alpha, beta, have to compute the square root of the tridiagonal
 	// matrix Tm. Do this using eigen-decomposition.
@@ -555,13 +556,13 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		printf("\n alpha: \n");
 		for( int ii = 0; ii < m; ++ii ){
-		    printf("%f \n", alpha_save[ii]);
+		    printf("ii = %d, alpha_save[ii] = %f \n", ii, alpha_save[ii]);
 		} 
 		printf("\n beta: \n");
 		for( int ii = 0; ii < m; ++ii ){
-		    printf("%f \n", beta_save[ii]);
+		    printf("ii = %d, beta_save[ii] = %f \n", ii, beta_save[ii]);
 		}
-		printf("%f \n", beta_save[m]); 
+		printf("m = %d, beta_save[m] = %f \n", m, beta_save[m]); 
 	    
 		printf("Note to User: restart simulation and proceed. \n");
 
@@ -576,6 +577,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	//     is easy to compute.
 	for ( int ii = 0; ii < m; ++ii ){
 	    W1[ii] = sqrtf( alpha[ii] ) * W[ii];
+		printf("ii = %d, W1[ii] = %d, W[ii] = %d", ii, W1[ii], W[ii])
 	}
 
 	// Tm = W * W1 = W * Lambda^(1/2) * W^T * e1
@@ -586,8 +588,10 @@ void gpu_stokes_BrealLanczos_wrap(
 		int idx = m*ii + jj;
 
 		tempsum += W[idx] * W1[jj];
+		printf("idx = %d, jj = %d, W[idx] = %d, W1[jj] = %d", idx, jj, W[idx], W1[jj])
 	    }
 	    Tm[ii] = tempsum;
+		printf("ii = %d, Tm[ii] = %d", ii, Tm[ii])
 	}
 
 	// Copy matrix to GPU
@@ -603,11 +607,11 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int ii = 0; ii < m; ++ii ){
 		alpha[ii] = alpha_save[ii];
 		beta[ii] = beta_save[ii];
-		printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
-		printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
+		printf("alpha_save[%d]: %d \n", ii, alpha_save[ii]);
+		printf("beta_save[%d]: %d \n", ii, beta_save[ii]);
 	}
 	beta[m] = beta_save[m];
-	printf("beta[%u]: %d \n", m, beta[m]);
+	printf("beta[m=%d]: %d \n", m, beta[m]);
 
 
 	//
@@ -628,7 +632,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store beta
 		beta[jj] = tempbeta;
-		printf("beta[%u]: %d \n", jj, tempbeta);
+		printf("beta[jj=%d]: %d \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
 		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
@@ -641,7 +645,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store updated alpha
 		alpha[jj] = tempalpha;
-		printf("alpha[%u]: %d \n", jj, tempalpha);
+		printf("alpha[jj=%d]: %d \n", jj, tempalpha);
 	
 		// v = v - alphaj*vj
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_v, d_vj, d_v, 1.0, -1.0*tempalpha, group_size, d_group_members);
@@ -675,11 +679,11 @@ void gpu_stokes_BrealLanczos_wrap(
 		for ( int ii = 0; ii < m; ++ii ){
 			alpha_save[ii] = alpha[ii];
 			beta_save[ii] = beta[ii];
-			printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
-			printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
+			printf("alpha_save[ii=%d]: %d \n", ii, alpha_save[ii]);
+			printf("beta_save[ii=%d]: %d \n", ii, beta_save[ii]);
 		}
 		beta_save[m] = beta[m];
-		printf("beta[%u]: %d \n", m, beta[m]);
+		printf("beta[m=%d]: %d \n", m, beta[m]);
 	
 		//
 		// Square root calculation with addition of latest Lanczos iteration
@@ -696,13 +700,13 @@ void gpu_stokes_BrealLanczos_wrap(
 	    
 	    	    	printf("\n alpha: \n");
 	    	    	for( int ii = 0; ii < m; ++ii ){
-	    	    	    printf("%f \n", alpha_save[ii]);
+	    	    	    printf("ii = %d, alpha_save[ii] = %f \n", ii, alpha_save[ii]);
 	    	    	} 
 	    	    	printf("\n beta: \n");
 	    	    	for( int ii = 0; ii < m; ++ii ){
-	    	    	    printf("%f \n", beta_save[ii]);
+	    	    	    printf("ii = %d, beta_save[ii] = %f \n", ii, beta_save[ii]);
 	    	    	}
-		    	printf("%f \n", beta_save[m]); 
+		    	printf("m = %d, beta_save[m] = %f \n", m, beta_save[m]); 
 		
 			printf("Note to User: restart simulation and proceed. \n");
 	    
@@ -712,6 +716,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		// Now, we have to compute Tm^(1/2) * e1
 		for ( int ii = 0; ii < m; ++ii ){
 		    W1[ii] = sqrtf( alpha[ii] ) * W[ii];
+			printf("ii = %d, W1[ii] = %d, W[ii] = %d", ii, W1[ii], W[ii])
 		}
 
 		// Tm = W * W1 = W * Lambda^(1/2) * W^T * e1
@@ -722,8 +727,10 @@ void gpu_stokes_BrealLanczos_wrap(
 			int idx = m*ii + jj;
 
 			tempsum += W[idx] * W1[jj];
+			printf("idx = %d, jj = %d, W[idx] = %d, W1[jj] = %d", idx, jj, W[idx], W1[jj])
 		    }
 		    Tm[ii] = tempsum;
+			printf("ii = %d, Tm[ii] = %d", ii, Tm[ii])
 		}
 
 		// Copy matrix to GPU
@@ -747,11 +754,11 @@ void gpu_stokes_BrealLanczos_wrap(
 		for ( int ii = 0; ii < m; ++ii ){
 			alpha[ii] = alpha_save[ii];
 			beta[ii] = beta_save[ii];
-			printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
-			printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
+			printf("alpha[ii=%d]: %d \n", ii, alpha[ii]);
+			printf("beta[ii=%d]: %d \n", ii, beta[ii]);
 		}
 		beta[m] = beta_save[m];
-		printf("beta[%u]: %d \n", m, beta[m]);
+		printf("beta[m=%d]: %d \n", m, beta[m]);
 
 	}
 
