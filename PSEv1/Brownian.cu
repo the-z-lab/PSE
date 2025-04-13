@@ -482,6 +482,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store beta
 		beta[jj] = tempbeta;
+		printf("beta[%u]: %d \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
     		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
@@ -494,7 +495,8 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store updated alpha
 		alpha[jj] = tempalpha;
-	
+		printf("alpha[%u]: %d \n", jj, tempalpha);
+
 		// v = v - alphaj*vj
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_v, d_vj, d_v, 1.0, -1.0*tempalpha, group_size, d_group_members);
 
@@ -529,6 +531,8 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int ii = 0; ii < m; ++ii ){
 		alpha_save[ii] = alpha[ii];
 		beta_save[ii] = beta[ii];
+		printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
+		printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
 	}
 	beta_save[m] = beta[m];
 
@@ -599,8 +603,11 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int ii = 0; ii < m; ++ii ){
 		alpha[ii] = alpha_save[ii];
 		beta[ii] = beta_save[ii];
+		printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
+		printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
 	}
 	beta[m] = beta_save[m];
+	printf("beta[%u]: %d \n", m, beta[m]);
 
 
 	//
@@ -621,6 +628,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store beta
 		beta[jj] = tempbeta;
+		printf("beta[%u]: %d \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
 		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
@@ -633,6 +641,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store updated alpha
 		alpha[jj] = tempalpha;
+		printf("alpha[%u]: %d \n", jj, tempalpha);
 	
 		// v = v - alphaj*vj
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_v, d_vj, d_v, 1.0, -1.0*tempalpha, group_size, d_group_members);
@@ -666,8 +675,11 @@ void gpu_stokes_BrealLanczos_wrap(
 		for ( int ii = 0; ii < m; ++ii ){
 			alpha_save[ii] = alpha[ii];
 			beta_save[ii] = beta[ii];
+			printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
+			printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
 		}
 		beta_save[m] = beta[m];
+		printf("beta[%u]: %d \n", m, beta[m]);
 	
 		//
 		// Square root calculation with addition of latest Lanczos iteration
@@ -735,8 +747,11 @@ void gpu_stokes_BrealLanczos_wrap(
 		for ( int ii = 0; ii < m; ++ii ){
 			alpha[ii] = alpha_save[ii];
 			beta[ii] = beta_save[ii];
+			printf("alpha_save[%u]: %d \n", ii, alpha_save[ii]);
+			printf("beta_save[%u]: %d \n", ii, beta_save[ii]);
 		}
 		beta[m] = beta_save[m];
+		printf("beta[%u]: %d \n", m, beta[m]);
 
 	}
 
