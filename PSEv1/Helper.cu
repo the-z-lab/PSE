@@ -163,6 +163,8 @@ __global__ void gpu_stokes_DotStepOne_kernel(
 		Scalar3 b = make_scalar3(b4.x, b4.y, b4.z);
 
 		temp = dot(a,b); // Partial sum, each thread, shared memory
+		printf("d_a[idx=%d] = %f \n", idx, d_a[idx]);
+		printf("d_b[idx=%d] = %f \n", idx, d_b[idx]);
 		printf("temp = %f \n", temp);
 
 	}
@@ -181,7 +183,7 @@ __global__ void gpu_stokes_DotStepOne_kernel(
         	if (threadIdx.x < offs)
             	{
             		partial_sum[threadIdx.x] += partial_sum[threadIdx.x + offs];
-					printf("Thread %d: partial_sum[%d] = %f \n", threadIdx.x, threadIdx.x + offs, partial_sum[threadIdx.x + offs]);
+					//printf("Thread %d: partial_sum[%d] = %f \n", threadIdx.x, threadIdx.x + offs, partial_sum[threadIdx.x + offs]);
             	}
         	offs >>= 1;
         	__syncthreads();
