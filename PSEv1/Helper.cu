@@ -187,6 +187,7 @@ __global__ void gpu_stokes_DotStepOne_kernel(
 
 	if (threadIdx.x == 0){
 		dot_sum[blockIdx.x] = partial_sum[0];
+		printf("Block %d: dot_sum[%d] = %f\n", blockIdx.x, blockIdx.x, dot_sum[blockIdx.x]);
 	}
 }
 

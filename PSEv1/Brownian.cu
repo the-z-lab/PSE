@@ -577,7 +577,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	//     is easy to compute.
 	for ( int ii = 0; ii < m; ++ii ){
 	    W1[ii] = sqrtf( alpha[ii] ) * W[ii];
-		printf("ii = %d, W1[ii] = %f, W[ii] = %f", ii, W1[ii], W[ii]);
+		printf("ii = %d, W1[ii] = %f, W[ii] = %f \n", ii, W1[ii], W[ii]);
 	}
 
 	// Tm = W * W1 = W * Lambda^(1/2) * W^T * e1
@@ -588,10 +588,10 @@ void gpu_stokes_BrealLanczos_wrap(
 		int idx = m*ii + jj;
 
 		tempsum += W[idx] * W1[jj];
-		printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f", idx, jj, W[idx], W1[jj]);
+		printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f \n", idx, jj, W[idx], W1[jj]);
 	    }
 	    Tm[ii] = tempsum;
-		printf("ii = %d, Tm[ii] = %f", ii, Tm[ii]);
+		printf("ii = %d, Tm[ii] = %f \n", ii, Tm[ii]);
 	}
 
 	// Copy matrix to GPU
@@ -716,7 +716,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		// Now, we have to compute Tm^(1/2) * e1
 		for ( int ii = 0; ii < m; ++ii ){
 		    W1[ii] = sqrtf( alpha[ii] ) * W[ii];
-			printf("ii = %d, W1[ii] = %f, W[ii] = %f", ii, W1[ii], W[ii]);
+			printf("ii = %d, W1[ii] = %f, W[ii] = %f \n", ii, W1[ii], W[ii]);
 		}
 
 		// Tm = W * W1 = W * Lambda^(1/2) * W^T * e1
@@ -727,10 +727,10 @@ void gpu_stokes_BrealLanczos_wrap(
 			int idx = m*ii + jj;
 
 			tempsum += W[idx] * W1[jj];
-			printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f", idx, jj, W[idx], W1[jj]);
+			printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f \n", idx, jj, W[idx], W1[jj]);
 		    }
 		    Tm[ii] = tempsum;
-			printf("ii = %d, Tm[ii] = %f", ii, Tm[ii]);
+			printf("ii = %d, Tm[ii] = %f \n", ii, Tm[ii]);
 		}
 
 		// Copy matrix to GPU
