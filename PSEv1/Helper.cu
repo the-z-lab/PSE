@@ -163,7 +163,7 @@ __global__ void gpu_stokes_DotStepOne_kernel(
 		Scalar3 b = make_scalar3(b4.x, b4.y, b4.z);
 
 		temp = dot(a,b); // Partial sum, each thread, shared memory
-		printf("temp = %f \n", temp)
+		printf("temp = %f \n", temp);
 
 	}
 	else {
