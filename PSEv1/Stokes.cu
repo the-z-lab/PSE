@@ -199,6 +199,40 @@ void gpu_stokes_step_one_kernel(
         }
     }
 
+// Initialize the active group membership/index list
+__global__ void initialize_groupmembership( int *d_group_membership, // particle membership and active group index list
+											unsigned int N_total) // total number of particles
+{
+	// Global particle index
+	unsigned int idx = threadIdx.x + blockIdx.x*blockDim.x;
+
+	// Flag every particle as not a member of the active group of interest
+	if (idx < N_total) {
+		d_group_membership[idx] = -1
+	}
+}
+
+// Determine active group membership and index for all of the particles.
+// A particle with global index i that is not a member of the active group has d_group_membership[i] = -1.
+// A particle with global index i that is a member of the active group has its active group-specific index in d_group_membership[i].
+// That is, d_group_members[d_group_membership[i]] = i.
+__global__ void groupmembership( int *d_group_membership, // particle membership and group index list
+								 unsigned int *d_group_members, // group members
+								 unsigned int group_size) //number of particles belonging to the group of interest
+{
+	// Group-specific particle index
+	unsigned int group_idx = threadIdx.x + blockIdx.x*blockDim.x;
+
+	if (group_idx < group_size) {
+
+		// Global particle index
+		unsigned int idx = d_group_members[group_idx];
+
+		// Set the group_specific index at the current particle's global index position in the group membership list
+		d_group_membership[idx] = group_idx;
+	}
+}
+
 /*! \param d_pos              array of particle positions
     \param d_vel              array of particle velocities
     \param d_accel            array of particle accelerations
