@@ -631,13 +631,13 @@ __global__ void gpu_stokes_Mreal_kernel(
 		
 		// Particle position and table ID
 		Scalar4 posi = __ldg(d_pos + idx);
-		printf("posi = (%f, %f, %f, %f) \n", posi.x, posi.y, posi.z, posi.w);
+		//printf("posi = (%f, %f, %f, %f) \n", posi.x, posi.y, posi.z, posi.w);
 		
 		// Self contribution
 		Scalar4 F = d_net_force[idx];
 		u = make_scalar4( self * F.x, self * F.y, self * F.z, 0.0 );
 		printf("Mreal: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, d_net_force[idx].x, d_net_force[idx].y, d_net_force[idx].z);
-		printf("self = %f \n", self);
+		//printf("self = %f \n", self);
 		printf("u = (%f, %f, %f, %f) \n", u.x, u.y, u.z, u.w);
 		
 		// Minimum and maximum distance for pair calculation
@@ -651,11 +651,11 @@ __global__ void gpu_stokes_Mreal_kernel(
 	
 			// Position and size of neighbor particle
 			Scalar4 posj = __ldg(d_pos + cur_j);
-			printf("posj = (%f, %f, %f, %f) \n", posj.x, posj.y, posj.z, posj.w);
+			//printf("posj = (%f, %f, %f, %f) \n", posj.x, posj.y, posj.z, posj.w);
 		
 			// Distance vector between current particle and neighbor
 			Scalar3 r = make_scalar3( posi.x - posj.x, posi.y - posj.y, posi.z - posj.z );
-			printf("r = (%f, %f, %f) \n", r.x, r.y, r.z);
+			//printf("r = (%f, %f, %f) \n", r.x, r.y, r.z);
 			r = box.minImage(r);
 			Scalar distSqr = dot(r,r);
 		
@@ -671,7 +671,6 @@ __global__ void gpu_stokes_Mreal_kernel(
 				// Force on neighbor particle
 				Scalar4 Fj = d_net_force[cur_j];
 				printf("Fj = d_net_force[cur_j] = (%f, %f, %f, %f) \n", Fj.x, Fj.y, Fj.z, Fj.w);
-				printf("The problem probably comes from cur_j and idx doesn't match. \n");
 			
 				// Fetch relevant elements from textured table for real space interaction
 				int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
