@@ -598,7 +598,8 @@ __global__ void gpu_stokes_Mreal_kernel(
 			      	Scalar ewald_cut,
 			      	int ewald_n,
 			      	Scalar ewald_dr,
-			      	unsigned int *d_group_members,
+			      	unsigned int *d_group_members, // pointer to array of particles belonging to the group
+					int *d_group_membership, // particle membership and index in group
 			      	BoxDim box,
 			      	const unsigned int *d_n_neigh,
                               	const unsigned int *d_nlist,
@@ -647,54 +648,58 @@ __global__ void gpu_stokes_Mreal_kernel(
 		
 		for (int neigh_idx = 0; neigh_idx < n_neigh; neigh_idx++) {
 
-			// Get index for current neightbor
-			unsigned int cur_j = d_nlist[ head_idx + neigh_idx ];	
-	
-			// Position and size of neighbor particle
-			Scalar4 posj = __ldg(d_pos + cur_j);
-			//printf("posj = (%f, %f, %f, %f) \n", posj.x, posj.y, posj.z, posj.w);
-		
-			// Distance vector between current particle and neighbor
-			Scalar3 r = make_scalar3( posi.x - posj.x, posi.y - posj.y, posi.z - posj.z );
-			//printf("r = (%f, %f, %f) \n", r.x, r.y, r.z);
-			r = box.minImage(r);
-			Scalar distSqr = dot(r,r);
-		
-			printf("idx %d, neighbor cur_j %d: distSqr = %f\n", idx, cur_j, distSqr);
+			// Get neighbor global and group index
+			unsigned int cur_nongroup_j = d_nlist[ head_idx + neigh_idx ];
+			int cur_j = d_group_membership[cur_nongroup_j];
 
-			// Add neighbor contribution if it is within the real space cutoff radius
-			if ( ( distSqr < maxdistSq ) && ( distSqr >= mindistSq ) ) {
-		
-				// Need distance 
-				Scalar dist = sqrtf( distSqr );
-				printf("dist = %f \n", dist);
-				
-				// Force on neighbor particle
-				Scalar4 Fj = d_net_force[cur_j];
-				printf("Fj = d_net_force[cur_j=%d] = (%f, %f, %f, %f) \n", cur_j, Fj.x, Fj.y, Fj.z, Fj.w);
+			// Check if neighbor is a member of the group of interest
+			if ( cur_j != -1 ) {			
+
+				// Position and size of neighbor particle
+				Scalar4 posj = __ldg(d_pos + cur_j);
+				//printf("posj = (%f, %f, %f, %f) \n", posj.x, posj.y, posj.z, posj.w);
 			
-				// Fetch relevant elements from textured table for real space interaction
-				int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
-				int offset = r_ind;
-		
-				Scalar4 tewaldC1 = __ldg(d_ewaldC1 + offset);
-		
-				// Linear interpolation of table
-				Scalar fac = dist / ewald_dr - r_ind - Scalar(1.0);
-		
-				Scalar Imrr = tewaldC1.x + ( tewaldC1.z - tewaldC1.x ) * fac;
-				Scalar rr = tewaldC1.y + ( tewaldC1.w - tewaldC1.y ) * fac;
-		
-				// Update velocity
-				Scalar rdotf = ( r.x*Fj.x + r.y*Fj.y + r.z*Fj.z ) / distSqr;
-		
-				u.x += Imrr * Fj.x + ( rr - Imrr ) * rdotf * r.x;
-				u.y += Imrr * Fj.y + ( rr - Imrr ) * rdotf * r.y;
-				u.z += Imrr * Fj.z + ( rr - Imrr ) * rdotf * r.z;
-		
-			}
-		
-		}
+				// Distance vector between current particle and neighbor
+				Scalar3 r = make_scalar3( posi.x - posj.x, posi.y - posj.y, posi.z - posj.z );
+				//printf("r = (%f, %f, %f) \n", r.x, r.y, r.z);
+				r = box.minImage(r);
+				Scalar distSqr = dot(r,r);
+			
+				printf("idx %d, neighbor cur_j %d: distSqr = %f\n", idx, cur_j, distSqr);
+	
+				// Add neighbor contribution if it is within the real space cutoff radius
+				if ( ( distSqr < maxdistSq ) && ( distSqr >= mindistSq ) ) {
+			
+					// Need distance 
+					Scalar dist = sqrtf( distSqr );
+					printf("dist = %f \n", dist);
+					
+					// Force on neighbor particle
+					Scalar4 Fj = d_net_force[cur_j];
+					printf("Fj = d_net_force[cur_j=%d] = (%f, %f, %f, %f) \n", cur_j, Fj.x, Fj.y, Fj.z, Fj.w);
+				
+					// Fetch relevant elements from textured table for real space interaction
+					int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
+					int offset = r_ind;
+			
+					Scalar4 tewaldC1 = __ldg(d_ewaldC1 + offset);
+			
+					// Linear interpolation of table
+					Scalar fac = dist / ewald_dr - r_ind - Scalar(1.0);
+			
+					Scalar Imrr = tewaldC1.x + ( tewaldC1.z - tewaldC1.x ) * fac;
+					Scalar rr = tewaldC1.y + ( tewaldC1.w - tewaldC1.y ) * fac;
+			
+					// Update velocity
+					Scalar rdotf = ( r.x*Fj.x + r.y*Fj.y + r.z*Fj.z ) / distSqr;
+			
+					u.x += Imrr * Fj.x + ( rr - Imrr ) * rdotf * r.x;
+					u.y += Imrr * Fj.y + ( rr - Imrr ) * rdotf * r.y;
+					u.z += Imrr * Fj.z + ( rr - Imrr ) * rdotf * r.z;
+
+				} // end neighbor contribution
+			} // end membership check
+		} // end neighbor loop
 		
 		// Write to output
 		d_vel[idx] = u;
@@ -788,7 +793,7 @@ void gpu_stokes_Mobility_wrap(
 	// Add the real space contribution to the velocity
 	//
 	// Real space calculation takes care of self contributions
-	gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_vel2, d_net_force, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
+	gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_vel2, d_net_force, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
 	
 	// Add real and wave space parts together
 	gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_vel1, d_vel2, d_vel, 1.0, 1.0, group_size, d_group_members);
