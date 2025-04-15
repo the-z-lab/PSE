@@ -635,6 +635,8 @@ __global__ void gpu_stokes_Mreal_kernel(
 		Scalar4 F = d_net_force[idx];
 		u = make_scalar4( self * F.x, self * F.y, self * F.z, 0.0 );
 		printf("Mreal: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, d_net_force[idx].x, d_net_force[idx].y, d_net_force[idx].z);
+		printf("self = %f \n", self);
+		printf("u = (%f, %f, %f, %f) \n", u.x, u.y, u.z, u.w);
 		
 		// Minimum and maximum distance for pair calculation
 		Scalar mindistSq = ewald_dr * ewald_dr;
