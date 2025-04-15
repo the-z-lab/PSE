@@ -153,6 +153,7 @@ __global__ void gpu_stokes_Spread_kernel(
 		force_shared[0].x = tforce.x;
 		force_shared[0].y = tforce.y;
 		force_shared[0].z = tforce.z;
+		printf("stokes_spread: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, tforce.x, tforce.y, tforce.z);
 	}
 	__syncthreads();
 	
@@ -670,7 +671,7 @@ __global__ void gpu_stokes_Mreal_kernel(
 				
 				// Force on neighbor particle
 				Scalar4 Fj = d_net_force[cur_j];
-				printf("Fj = d_net_force[cur_j] = (%f, %f, %f, %f) \n", Fj.x, Fj.y, Fj.z, Fj.w);
+				printf("Fj = d_net_force[cur_j=%d] = (%f, %f, %f, %f) \n", cur_j, Fj.x, Fj.y, Fj.z, Fj.w);
 			
 				// Fetch relevant elements from textured table for real space interaction
 				int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
