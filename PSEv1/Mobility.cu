@@ -619,7 +619,7 @@ __global__ void gpu_stokes_Mreal_kernel(
 		// read the particle's posision (MEM TRANSFER: 16 bytes)
         Scalar4 postype = d_pos[idx];
         Scalar3 pos = make_scalar3(postype.x, postype.y, postype.z);
-		printf("pos = (%f, %f, %f) \n", postype.x, postype.y, postype.z);
+		//printf("pos = (%f, %f, %f) \n", postype.x, postype.y, postype.z);
 
 		// Print the "particle index" = idx, the "group index" = group_idx,
         // and the position from 'pos'
