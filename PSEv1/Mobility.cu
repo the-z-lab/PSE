@@ -686,6 +686,7 @@ __global__ void gpu_stokes_Mreal_kernel(
 		
 		// Write to output
 		d_vel[idx] = u;
+		printf("Mreal: d_vel[idx=%d] = (%f, %f, %f) \n", idx, d_vel[idx].x, d_vel[idx].y, d_vel[idx].z);
 	
 	}    
 }

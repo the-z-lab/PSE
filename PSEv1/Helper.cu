@@ -129,10 +129,10 @@ __global__ void gpu_stokes_LinearCombination_kernel(
 		Scalar3 B = make_scalar3(B4.x, B4.y, B4.z);
 		A = coeff_a * A + coeff_b * B;
 		d_c[idx] = make_scalar4(A.x, A.y, A.z, d_c[idx].w);
-		printf("LinearCombination: \n");
-		printf("A[%d] = (%f, %f, %f)\n", idx, A4.x, A4.y, A4.z);
-		printf("B[%d] = (%f, %f, %f)\n", idx, B4.x, B4.y, B4.z);
-		printf("C[%d] = (%f, %f, %f, %f)\n", idx, A.x, A.y, A.z, d_c[idx].w);
+		//printf("LinearCombination: \n");
+		//printf("A[%d] = (%f, %f, %f)\n", idx, A4.x, A4.y, A4.z);
+		//printf("B[%d] = (%f, %f, %f)\n", idx, B4.x, B4.y, B4.z);
+		//printf("C[%d] = (%f, %f, %f, %f)\n", idx, A.x, A.y, A.z, d_c[idx].w);
 	}
 }
 
