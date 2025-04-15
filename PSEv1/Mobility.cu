@@ -662,9 +662,11 @@ __global__ void gpu_stokes_Mreal_kernel(
 		
 				// Need distance 
 				Scalar dist = sqrtf( distSqr );
+				printf("dist = %f \n", dist);
 				
 				// Force on neighbor particle
 				Scalar4 Fj = d_net_force[cur_j];
+				printf("Fj = d_net_force[cur_j] = (%f, %f, %f, %f) \n", Fj.x, Fj.y, Fj.z, Fj.w);
 			
 				// Fetch relevant elements from textured table for real space interaction
 				int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
