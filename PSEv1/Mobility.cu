@@ -655,6 +655,8 @@ __global__ void gpu_stokes_Mreal_kernel(
 			r = box.minImage(r);
 			Scalar distSqr = dot(r,r);
 		
+			printf("idx %d, neighbor %d: distSqr = %f\n", idx, cur_j, distSqr);
+
 			// Add neighbor contribution if it is within the real space cutoff radius
 			if ( ( distSqr < maxdistSq ) && ( distSqr >= mindistSq ) ) {
 		
