@@ -129,6 +129,7 @@ __global__ void gpu_stokes_BrownianGenerate_kernel(
 
 		// Write to global memory, leaving the 4th element unchanged
 		d_psi[idx] = make_scalar4(randomx, randomy, randomz, d_psi[idx].w);
+		printf("BrownianGenerate: d_psi[idx=%d] = (%f, %f, %f, %f) \n", idx, d_psi[idx].x, d_psi[idx].y, d_psi[idx].z, d_psi[idx].w);
 
 	}
 }
