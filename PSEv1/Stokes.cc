@@ -266,6 +266,11 @@ void Stokes::setParams()
 	GPUArray<cufftComplex> n_gridZ(m_Nx*m_Ny*m_Nz, m_exec_conf);
 	m_gridZ.swap(n_gridZ);
 
+	// membership list
+	m_Ntotal = m_pdata->getN();
+	GPUArray<int> n_group_membership(m_Ntotal, m_exec_conf);
+	m_group_membership.swap(n_group_membership);
+
 	// Get list of reciprocal space vectors, and scaling factor for the wave space calculation at each grid point
 	ArrayHandle<Scalar4> h_gridk(m_gridk, access_location::host, access_mode::readwrite);
 	for (int i = 0; i < m_Nx; i++) {
@@ -456,9 +461,10 @@ void Stokes::integrateStepOne(unsigned int timestep)
 	ArrayHandle<Scalar3> d_accel(m_pdata->getAccelerations(), access_location::device, access_mode::readwrite);
 	ArrayHandle<Scalar4> d_net_force(net_force, access_location::device, access_mode::read);
 	ArrayHandle<int3> d_image(m_pdata->getImages(), access_location::device, access_mode::readwrite);
+	ArrayHandle<int> d_group_membership(m_group_membership, access_location::device, access_mod::readwrite); // active group indices
 
 	BoxDim box = m_pdata->getBox();
-	ArrayHandle< unsigned int > d_index_array(m_group->getIndexArray(), access_location::device, access_mode::read);
+	ArrayHandle< unsigned int > d_index_array(m_group->getIndexArray(), access_location::device, access_mode::read); // d_group_members, particles in the active group
 
 	// Grid vectors
 	ArrayHandle<Scalar4> d_gridk(m_gridk, access_location::device, access_mode::readwrite);
@@ -478,7 +484,8 @@ void Stokes::integrateStepOne(unsigned int timestep)
 				d_vel.data,
 				d_accel.data,
 				d_image.data,
-				d_index_array.data,
+				d_index_array.data, // d_group_members.data
+				d_group_membership.data,
 				group_size,
 				box,
 				m_deltaT,

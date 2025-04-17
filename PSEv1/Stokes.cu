@@ -237,6 +237,7 @@ __global__ void groupmembership( int *d_group_membership, // particle membership
     \param d_vel              array of particle velocities
     \param d_accel            array of particle accelerations
     \param d_image            array of particle images
+	\param d_group_memberships
     \param d_group_members    Device array listing the indicies of the mebers of the group to integrate
     \param group_size         Number of members in the group ( i.e. number of particles to consider )
     \param box                Box dimensions for periodic boundary condition handling
