@@ -656,7 +656,7 @@ __global__ void gpu_stokes_Mreal_kernel(
 			if ( cur_j != -1 ) {			
 
 				// Position and size of neighbor particle
-				Scalar4 posj = __ldg(d_pos + cur_j);
+				Scalar4 posj = __ldg(d_pos + cur_nongroup_j);
 				//printf("posj = (%f, %f, %f, %f) \n", posj.x, posj.y, posj.z, posj.w);
 			
 				// Distance vector between current particle and neighbor
@@ -665,7 +665,7 @@ __global__ void gpu_stokes_Mreal_kernel(
 				r = box.minImage(r);
 				Scalar distSqr = dot(r,r);
 			
-				printf("idx %d, neighbor cur_j %d: distSqr = %f\n", idx, cur_j, distSqr);
+				printf("idx %d, neighbor cur_nongroup_j %d: distSqr = %f\n", idx, cur_nongroup_j, distSqr);
 	
 				// Add neighbor contribution if it is within the real space cutoff radius
 				if ( ( distSqr < maxdistSq ) && ( distSqr >= mindistSq ) ) {
@@ -675,8 +675,8 @@ __global__ void gpu_stokes_Mreal_kernel(
 					printf("dist = %f \n", dist);
 					
 					// Force on neighbor particle
-					Scalar4 Fj = d_net_force[cur_j];
-					printf("Fj = d_net_force[cur_j=%d] = (%f, %f, %f, %f) \n", cur_j, Fj.x, Fj.y, Fj.z, Fj.w);
+					Scalar4 Fj = d_net_force[cur_nongroup_j];
+					printf("Fj = d_net_force[cur_nongroup_j=%d] = (%f, %f, %f, %f) \n", cur_nongroup_j, Fj.x, Fj.y, Fj.z, Fj.w);
 				
 					// Fetch relevant elements from textured table for real space interaction
 					int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
