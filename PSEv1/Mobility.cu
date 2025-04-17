@@ -754,6 +754,7 @@ void gpu_stokes_Mobility_wrap(
 				Scalar4 *d_net_force,
 				const unsigned int N_total,
 				unsigned int *d_group_members,
+				int *d_group_membership,
 				unsigned int group_size,
 				const BoxDim& box,
 				Scalar xi,
