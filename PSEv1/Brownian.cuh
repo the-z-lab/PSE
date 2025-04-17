@@ -91,6 +91,7 @@ void gpu_stokes_CombinedMobilityBrownian_wrap(
 				Scalar4 *d_pos,
 				Scalar4 *d_net_force,
                                 unsigned int *d_group_members,
+								int *d_group_membership,
                                 unsigned int group_size,
                                 const BoxDim& box,
                                 Scalar dt,
