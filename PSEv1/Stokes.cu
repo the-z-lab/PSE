@@ -345,6 +345,7 @@ cudaError_t gpu_stokes_step_one(
 							d_pos,
 							d_net_force,
                                 			d_group_members,
+											d_group_membership,
                                 			group_size,
                                 			box,
                                 			dt,
