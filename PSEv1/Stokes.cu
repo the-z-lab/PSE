@@ -328,9 +328,6 @@ cudaError_t gpu_stokes_step_one(
 	int gridBlockSize = ( NxNyNz > block_size ) ? block_size : NxNyNz;
 	int gridNBlock = ( NxNyNz + gridBlockSize - 1 ) / gridBlockSize ; 
 
-	// Get sheared grid vectors
-    gpu_stokes_SetGridk_kernel<<<gridNBlock,gridBlockSize>>>(d_gridk,Nx,Ny,Nz,NxNyNz,box,xi,eta);
-
 	// Update the group membership list
 	initialize_groupmembership<<<gridMembership,threads>>>(d_group_membership, N_total); // one thread per total particle
 	groupmembership<<<grid,threads>>>(d_group_membership, d_group_members, group_size);
@@ -339,6 +336,9 @@ cudaError_t gpu_stokes_step_one(
 	gpu_stokes_ZeroGrid_kernel<<<gridNBlock,gridBlockSize>>>(d_gridX,NxNyNz);
 	gpu_stokes_ZeroGrid_kernel<<<gridNBlock,gridBlockSize>>>(d_gridY,NxNyNz);
 	gpu_stokes_ZeroGrid_kernel<<<gridNBlock,gridBlockSize>>>(d_gridZ,NxNyNz);
+
+	// Get sheared grid vectors
+    gpu_stokes_SetGridk_kernel<<<gridNBlock,gridBlockSize>>>(d_gridk,Nx,Ny,Nz,NxNyNz,box,xi,eta);
 
 	// Do Mobility and Brownian Calculations (compute the velocity from the forces)
 	gpu_stokes_CombinedMobilityBrownian_wrap(  	
