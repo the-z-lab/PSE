@@ -158,6 +158,10 @@ class Stokes : public IntegrationMethodTwoStep
 
         Scalar m_error;  //!< Error tolerance for all calculations
 
+        int m_Ntotal; // total number of particles
+        unsigned int group_size; // number of particles in the active group
+        GPUArray<int> m_group_membership; // active group membership list
+
     };
 
 //! Exports the Stokes class to python

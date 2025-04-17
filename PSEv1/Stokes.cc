@@ -266,11 +266,6 @@ void Stokes::setParams()
 	GPUArray<cufftComplex> n_gridZ(m_Nx*m_Ny*m_Nz, m_exec_conf);
 	m_gridZ.swap(n_gridZ);
 
-	// membership list
-	m_Ntotal = m_pdata->getN();
-	GPUArray<int> n_group_membership(m_Ntotal, m_exec_conf);
-	m_group_membership.swap(n_group_membership);
-
 	// Get list of reciprocal space vectors, and scaling factor for the wave space calculation at each grid point
 	ArrayHandle<Scalar4> h_gridk(m_gridk, access_location::host, access_mode::readwrite);
 	for (int i = 0; i < m_Nx; i++) {
@@ -425,6 +420,13 @@ void Stokes::setParams()
 		h_ewaldC1.data[ offset1 ].z = h_ewaldC1.data[ offset2 ].x;
 		h_ewaldC1.data[ offset1 ].w = h_ewaldC1.data[ offset2 ].y;
 	}
+
+	//// Initialization for needed arrays
+
+	// membership list
+	m_Ntotal = m_pdata->getN();
+	GPUArray<int> n_group_membership(m_Ntotal, m_exec_conf);
+	m_group_membership.swap(n_group_membership);
 
 }
 
