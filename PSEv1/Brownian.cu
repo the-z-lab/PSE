@@ -486,7 +486,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		printf("beta[jj=%d]: %f \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
-    		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
+    		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_Mvj, d_vjm1, d_v, 1.0, -1.0*tempbeta, group_size, d_group_members);
 
 		// vj dot v
@@ -636,7 +636,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		printf("beta[jj=%d]: %f \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
-		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
+		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_Mvj, d_vjm1, d_v, 1.0, -1.0*tempbeta, group_size, d_group_members);
 
 		// vj dot v
@@ -904,7 +904,7 @@ void gpu_stokes_CombinedMobilityBrownian_wrap(
 	// ***************************************
 	
 	// Deterministic part
-	gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_vel2, d_net_force, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
+	gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_vel2, d_net_force, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
 	
 	// Add to velocity
 	gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_vel2, d_vel, d_vel, 1.0, 1.0, group_size, d_group_members);
