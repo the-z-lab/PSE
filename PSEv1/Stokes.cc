@@ -463,7 +463,7 @@ void Stokes::integrateStepOne(unsigned int timestep)
 	ArrayHandle<Scalar3> d_accel(m_pdata->getAccelerations(), access_location::device, access_mode::readwrite);
 	ArrayHandle<Scalar4> d_net_force(net_force, access_location::device, access_mode::read);
 	ArrayHandle<int3> d_image(m_pdata->getImages(), access_location::device, access_mode::readwrite);
-	ArrayHandle<int> d_group_membership(m_group_membership, access_location::device, access_mod::readwrite); // active group indices
+	ArrayHandle<int> d_group_membership(m_group_membership, access_location::device, access_mode::readwrite); // active group indices
 
 	BoxDim box = m_pdata->getBox();
 	ArrayHandle< unsigned int > d_index_array(m_group->getIndexArray(), access_location::device, access_mode::read); // d_group_members, particles in the active group
