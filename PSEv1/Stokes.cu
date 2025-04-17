@@ -208,7 +208,7 @@ __global__ void initialize_groupmembership( int *d_group_membership, // particle
 
 	// Flag every particle as not a member of the active group of interest
 	if (idx < N_total) {
-		d_group_membership[idx] = -1
+		d_group_membership[idx] = -1;
 	}
 }
 
