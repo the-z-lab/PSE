@@ -456,7 +456,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	Scalar psinorm = vnorm;
 
     	// Compute psi * M * psi ( for step norm )
-    	gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mpsi, d_psi, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, box, d_n_neigh, d_nlist, d_headlist );
+    	gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mpsi, d_psi, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
     	gpu_stokes_DotStepOne_kernel<<< grid_for_dot, thread_for_dot, thread_for_dot*sizeof(Scalar) >>>(d_psi, d_Mpsi, dot_sum, group_size, d_group_members);
     	gpu_stokes_DotStepTwo_kernel<<< 1, thread_for_dot, thread_for_dot*sizeof(Scalar) >>>(dot_sum, grid_for_dot);
     	cudaMemcpy(&psiMpsi, dot_sum, sizeof(Scalar), cudaMemcpyDeviceToHost);
