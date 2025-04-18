@@ -167,10 +167,10 @@ __global__ void gpu_stokes_DotStepOne_kernel(
 		Scalar3 b = make_scalar3(b4.x, b4.y, b4.z);
 
 		temp = dot(a,b); // Partial sum, each thread, shared memory
-		printf("DotStepOne: \n");
-		printf("a[%d] = (%f, %f, %f)\n", idx, a.x, a.y, a.z);
-		printf("b[%d] = (%f, %f, %f)\n", idx, b.x, b.y, b.z);
-		printf("temp = %f \n", temp);
+		//printf("DotStepOne: \n");
+		//printf("a[%d] = (%f, %f, %f)\n", idx, a.x, a.y, a.z);
+		//printf("b[%d] = (%f, %f, %f)\n", idx, b.x, b.y, b.z);
+		//printf("temp = %f \n", temp);
 
 	}
 	else {
@@ -196,7 +196,7 @@ __global__ void gpu_stokes_DotStepOne_kernel(
 
 	if (threadIdx.x == 0){
 		dot_sum[blockIdx.x] = partial_sum[0];
-		printf("Block %d: dot_sum[%d] = %f\n", blockIdx.x, blockIdx.x, dot_sum[blockIdx.x]);
+		//printf("Block %d: dot_sum[%d] = %f\n", blockIdx.x, blockIdx.x, dot_sum[blockIdx.x]);
 	}
 }
 
@@ -223,7 +223,7 @@ __global__ void gpu_stokes_DotStepTwo_kernel(
         	if (start + threadIdx.x < num_partial_sums)
             	{
             		partial_sum[threadIdx.x] += dot_sum[start + threadIdx.x];
-					printf("Thread %d: dot_sum[%d] = %f\n", threadIdx.x, start + threadIdx.x, dot_sum[start + threadIdx.x]);
+					//printf("Thread %d: dot_sum[%d] = %f\n", threadIdx.x, start + threadIdx.x, dot_sum[start + threadIdx.x]);
             	}
 	}
 

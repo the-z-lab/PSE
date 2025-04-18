@@ -129,7 +129,7 @@ __global__ void gpu_stokes_BrownianGenerate_kernel(
 
 		// Write to global memory, leaving the 4th element unchanged
 		d_psi[idx] = make_scalar4(randomx, randomy, randomz, d_psi[idx].w);
-		printf("BrownianGenerate: d_psi[idx=%d] = (%f, %f, %f, %f) \n", idx, d_psi[idx].x, d_psi[idx].y, d_psi[idx].z, d_psi[idx].w);
+		//printf("BrownianGenerate: d_psi[idx=%d] = (%f, %f, %f, %f) \n", idx, d_psi[idx].x, d_psi[idx].y, d_psi[idx].z, d_psi[idx].w);
 
 	}
 }
@@ -484,7 +484,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store beta
 		beta[jj] = tempbeta;
-		printf("beta[jj=%d]: %f \n", jj, tempbeta);
+		//printf("beta[jj=%d]: %f \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
     		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
@@ -497,7 +497,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store updated alpha
 		alpha[jj] = tempalpha;
-		printf("alpha[jj=%d]: %f \n", jj, tempalpha);
+		//printf("alpha[jj=%d]: %f \n", jj, tempalpha);
 
 		// v = v - alphaj*vj
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_v, d_vj, d_v, 1.0, -1.0*tempalpha, group_size, d_group_members);
@@ -533,11 +533,11 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int ii = 0; ii < m; ++ii ){
 		alpha_save[ii] = alpha[ii];
 		beta_save[ii] = beta[ii];
-		printf("alpha_save[ii=%d]: %f \n", ii, alpha_save[ii]);
-		printf("beta_save[ii=%d]: %f \n", ii, beta_save[ii]);
+		//printf("alpha_save[ii=%d]: %f \n", ii, alpha_save[ii]);
+		//printf("beta_save[ii=%d]: %f \n", ii, beta_save[ii]);
 	}
 	beta_save[m] = beta[m];
-	printf("beta_save[m=%d]: %f \n", m, beta[m]);
+	//printf("beta_save[m=%d]: %f \n", m, beta[m]);
 
 	// Now that we have alpha, beta, have to compute the square root of the tridiagonal
 	// matrix Tm. Do this using eigen-decomposition.
@@ -579,7 +579,7 @@ void gpu_stokes_BrealLanczos_wrap(
 	//     is easy to compute.
 	for ( int ii = 0; ii < m; ++ii ){
 	    W1[ii] = sqrtf( alpha[ii] ) * W[ii];
-		printf("ii = %d, W1[ii] = %f, W[ii] = %f \n", ii, W1[ii], W[ii]);
+		//printf("ii = %d, W1[ii] = %f, W[ii] = %f \n", ii, W1[ii], W[ii]);
 	}
 
 	// Tm = W * W1 = W * Lambda^(1/2) * W^T * e1
@@ -590,10 +590,10 @@ void gpu_stokes_BrealLanczos_wrap(
 		int idx = m*ii + jj;
 
 		tempsum += W[idx] * W1[jj];
-		printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f \n", idx, jj, W[idx], W1[jj]);
+		//printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f \n", idx, jj, W[idx], W1[jj]);
 	    }
 	    Tm[ii] = tempsum;
-		printf("ii = %d, Tm[ii] = %f \n", ii, Tm[ii]);
+		//printf("ii = %d, Tm[ii] = %f \n", ii, Tm[ii]);
 	}
 
 	// Copy matrix to GPU
@@ -609,11 +609,11 @@ void gpu_stokes_BrealLanczos_wrap(
 	for ( int ii = 0; ii < m; ++ii ){
 		alpha[ii] = alpha_save[ii];
 		beta[ii] = beta_save[ii];
-		printf("alpha_save[ii=%d]: %f \n", ii, alpha_save[ii]);
-		printf("beta_save[ii=%d]: %f \n", ii, beta_save[ii]);
+		//printf("alpha_save[ii=%d]: %f \n", ii, alpha_save[ii]);
+		//printf("beta_save[ii=%d]: %f \n", ii, beta_save[ii]);
 	}
 	beta[m] = beta_save[m];
-	printf("beta[m=%d]: %f \n", m, beta[m]);
+	//printf("beta[m=%d]: %f \n", m, beta[m]);
 
 
 	//
@@ -634,7 +634,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store beta
 		beta[jj] = tempbeta;
-		printf("beta[jj=%d]: %f \n", jj, tempbeta);
+		//printf("beta[jj=%d]: %f \n", jj, tempbeta);
 
 		// v = M*vj - betaj*vjm1
 		gpu_stokes_Mreal_kernel<<<grid, threads>>>(d_pos, d_Mvj, d_vj, group_size, xi, d_ewaldC1, self, ewald_cut, ewald_n, ewald_dr, d_group_members, d_group_membership, box, d_n_neigh, d_nlist, d_headlist );
@@ -647,7 +647,7 @@ void gpu_stokes_BrealLanczos_wrap(
 
 		// Store updated alpha
 		alpha[jj] = tempalpha;
-		printf("alpha[jj=%d]: %f \n", jj, tempalpha);
+		//printf("alpha[jj=%d]: %f \n", jj, tempalpha);
 	
 		// v = v - alphaj*vj
 		gpu_stokes_LinearCombination_kernel<<<grid, threads>>>(d_v, d_vj, d_v, 1.0, -1.0*tempalpha, group_size, d_group_members);
@@ -681,11 +681,11 @@ void gpu_stokes_BrealLanczos_wrap(
 		for ( int ii = 0; ii < m; ++ii ){
 			alpha_save[ii] = alpha[ii];
 			beta_save[ii] = beta[ii];
-			printf("alpha_save[ii=%d]: %f \n", ii, alpha_save[ii]);
-			printf("beta_save[ii=%d]: %f \n", ii, beta_save[ii]);
+			//printf("alpha_save[ii=%d]: %f \n", ii, alpha_save[ii]);
+			//printf("beta_save[ii=%d]: %f \n", ii, beta_save[ii]);
 		}
 		beta_save[m] = beta[m];
-		printf("beta[m=%d]: %f \n", m, beta[m]);
+		//printf("beta[m=%d]: %f \n", m, beta[m]);
 	
 		//
 		// Square root calculation with addition of latest Lanczos iteration
@@ -718,7 +718,7 @@ void gpu_stokes_BrealLanczos_wrap(
 		// Now, we have to compute Tm^(1/2) * e1
 		for ( int ii = 0; ii < m; ++ii ){
 		    W1[ii] = sqrtf( alpha[ii] ) * W[ii];
-			printf("ii = %d, W1[ii] = %f, W[ii] = %f \n", ii, W1[ii], W[ii]);
+			//printf("ii = %d, W1[ii] = %f, W[ii] = %f \n", ii, W1[ii], W[ii]);
 		}
 
 		// Tm = W * W1 = W * Lambda^(1/2) * W^T * e1
@@ -729,10 +729,10 @@ void gpu_stokes_BrealLanczos_wrap(
 			int idx = m*ii + jj;
 
 			tempsum += W[idx] * W1[jj];
-			printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f \n", idx, jj, W[idx], W1[jj]);
+			//printf("idx = %d, jj = %d, W[idx] = %f, W1[jj] = %f \n", idx, jj, W[idx], W1[jj]);
 		    }
 		    Tm[ii] = tempsum;
-			printf("ii = %d, Tm[ii] = %f \n", ii, Tm[ii]);
+			//printf("ii = %d, Tm[ii] = %f \n", ii, Tm[ii]);
 		}
 
 		// Copy matrix to GPU
@@ -756,11 +756,11 @@ void gpu_stokes_BrealLanczos_wrap(
 		for ( int ii = 0; ii < m; ++ii ){
 			alpha[ii] = alpha_save[ii];
 			beta[ii] = beta_save[ii];
-			printf("alpha[ii=%d]: %f \n", ii, alpha[ii]);
-			printf("beta[ii=%d]: %f \n", ii, beta[ii]);
+			//printf("alpha[ii=%d]: %f \n", ii, alpha[ii]);
+			//printf("beta[ii=%d]: %f \n", ii, beta[ii]);
 		}
 		beta[m] = beta_save[m];
-		printf("beta[m=%d]: %f \n", m, beta[m]);
+		//printf("beta[m=%d]: %f \n", m, beta[m]);
 
 	}
 

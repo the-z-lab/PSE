@@ -153,7 +153,7 @@ __global__ void gpu_stokes_Spread_kernel(
 		force_shared[0].x = tforce.x;
 		force_shared[0].y = tforce.y;
 		force_shared[0].z = tforce.z;
-		printf("stokes_spread: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, tforce.x, tforce.y, tforce.z);
+		//printf("stokes_spread: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, tforce.x, tforce.y, tforce.z);
 	}
 	__syncthreads();
 	
@@ -638,9 +638,9 @@ __global__ void gpu_stokes_Mreal_kernel(
 		// Self contribution
 		Scalar4 F = d_net_force[idx];
 		u = make_scalar4( self * F.x, self * F.y, self * F.z, 0.0 );
-		printf("Mreal: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, d_net_force[idx].x, d_net_force[idx].y, d_net_force[idx].z);
+		//printf("Mreal: d_net_force[idx=%d] = (%f, %f, %f) \n", idx, d_net_force[idx].x, d_net_force[idx].y, d_net_force[idx].z);
 		//printf("self = %f \n", self);
-		printf("u = (%f, %f, %f, %f) \n", u.x, u.y, u.z, u.w);
+		//printf("u = (%f, %f, %f, %f) \n", u.x, u.y, u.z, u.w);
 		
 		// Minimum and maximum distance for pair calculation
 		Scalar mindistSq = ewald_dr * ewald_dr;
@@ -665,18 +665,18 @@ __global__ void gpu_stokes_Mreal_kernel(
 				r = box.minImage(r);
 				Scalar distSqr = dot(r,r);
 			
-				printf("idx %d, neighbor cur_nongroup_j %d: distSqr = %f\n", idx, cur_nongroup_j, distSqr);
+				//printf("idx %d, neighbor cur_nongroup_j %d: distSqr = %f\n", idx, cur_nongroup_j, distSqr);
 	
 				// Add neighbor contribution if it is within the real space cutoff radius
 				if ( ( distSqr < maxdistSq ) && ( distSqr >= mindistSq ) ) {
 			
 					// Need distance 
 					Scalar dist = sqrtf( distSqr );
-					printf("dist = %f \n", dist);
+					//printf("dist = %f \n", dist);
 					
 					// Force on neighbor particle
 					Scalar4 Fj = d_net_force[cur_nongroup_j];
-					printf("Fj = d_net_force[cur_nongroup_j=%d] = (%f, %f, %f, %f) \n", cur_nongroup_j, Fj.x, Fj.y, Fj.z, Fj.w);
+					//printf("Fj = d_net_force[cur_nongroup_j=%d] = (%f, %f, %f, %f) \n", cur_nongroup_j, Fj.x, Fj.y, Fj.z, Fj.w);
 				
 					// Fetch relevant elements from textured table for real space interaction
 					int r_ind = __scalar2int_rd( ewald_n * ( dist - ewald_dr ) / ( ewald_cut - ewald_dr ) );
@@ -703,7 +703,7 @@ __global__ void gpu_stokes_Mreal_kernel(
 		
 		// Write to output
 		d_vel[idx] = u;
-		printf("Mreal: d_vel[idx=%d] = (%f, %f, %f) \n", idx, d_vel[idx].x, d_vel[idx].y, d_vel[idx].z);
+		//printf("Mreal: d_vel[idx=%d] = (%f, %f, %f) \n", idx, d_vel[idx].x, d_vel[idx].y, d_vel[idx].z);
 	
 	}    
 }

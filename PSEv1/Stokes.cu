@@ -163,14 +163,14 @@ void gpu_stokes_step_one_kernel(
         Scalar4 velmass = d_vel[idx];
 		Scalar mass = velmass.w;
         Scalar3 vel = make_scalar3(velmass.x, velmass.y, velmass.z);
-		printf("stokes_step_one: d_vel[idx=%d] = (%f, %f, %f, %f) \n", idx, velmass.x, velmass.y, velmass.z, velmass.w);
+		//printf("stokes_step_one: d_vel[idx=%d] = (%f, %f, %f, %f) \n", idx, velmass.x, velmass.y, velmass.z, velmass.w);
 
 	// Add the shear
         vel.x += shear_rate * pos.y;
 
 		Scalar4 net_force = d_net_force[idx];
         Scalar3 accel = make_scalar3(net_force.x, net_force.y, net_force.z);
-		printf("stokes_step_one: d_net_force[idx=%d] = (%f, %f, %f, %f) \n", idx, net_force.x, net_force.y, net_force.z, net_force.w);
+		//printf("stokes_step_one: d_net_force[idx=%d] = (%f, %f, %f, %f) \n", idx, net_force.x, net_force.y, net_force.z, net_force.w);
 
         // update the position
         Scalar3 dx = vel * deltaT;
@@ -190,7 +190,7 @@ void gpu_stokes_step_one_kernel(
 		d_accel[idx] = accel;
         d_pos[idx] = make_scalar4(pos.x, pos.y, pos.z, postype.w);
         d_image[idx] = image;
-		printf("stokes_step_one: d_accel[idx=%d] = (%f, %f, %f) \n", idx, d_accel[idx].x, d_accel[idx].y, d_accel[idx].z);
+		//printf("stokes_step_one: d_accel[idx=%d] = (%f, %f, %f) \n", idx, d_accel[idx].x, d_accel[idx].y, d_accel[idx].z);
 
 	// Print the "particle index" = idx, the "group index" = group_idx,
         // and the position from 'pos'
